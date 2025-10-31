@@ -56,6 +56,33 @@ public class MemberRestController {
     }
 
     /**
+     * [PUT] /api/members/{memberId}
+     * (Update) 회원 정보 수정 API
+     * @param memberId (URL 경로의 변수)
+     * @param member (요청 Body의 JSON 데이터)
+     * @return ResponseEntity<MemberDTO> (200 OK 또는 404 Not Found)
+     */
+    @PutMapping("/{memberId}")
+    public ResponseEntity<MemberDTO> updateMember(
+            @PathVariable int memberId,
+            @RequestBody MemberDTO member) { // (Validation은 14단계에서 추가)
+
+        // 1. DTO에 URL의 memberId를 세팅
+        member.setMemberId(memberId);
+
+        // 2. Service의 updateMember 실행
+        boolean isSuccess = memberService.updateMember(member);
+
+        if (isSuccess) {
+            // 3. 업데이트 성공 시, 수정된 객체 정보(member)와 200 OK 반환
+            return ResponseEntity.ok(member);
+        } else {
+            // 4. 업데이트 실패 (memberId 없음) -> 404 Not Found 반환
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
      * [GET] /api/members/search/books?name=...
      * 특정 이름의 회원이 대출한 도서 목록 조회 API
      * @param name (URL 쿼리 파라미터)
@@ -66,5 +93,4 @@ public class MemberRestController {
         // (검색 결과가 없어도 빈 리스트[]를 200 OK로 반환)
         return ResponseEntity.ok(memberService.getBooksRentedByMemberName(name));
     }
-
-}
+    }

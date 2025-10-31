@@ -16,4 +16,6 @@ public interface MemberService {
     MemberDTO getMemberById(int memberId);
 
     List<BookDTO> getBooksRentedByMemberName(String name);
+
+    boolean updateMember(MemberDTO member);
 }

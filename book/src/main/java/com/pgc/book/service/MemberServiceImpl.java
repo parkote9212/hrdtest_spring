@@ -41,4 +41,12 @@ public class MemberServiceImpl implements MemberService { // MemberService 구�
     public List<BookDTO> getBooksRentedByMemberName(String name) {
         return memberMapper.findBooksRentedByMemberName(name);
     }
+
+    @Transactional // (쓰기 가능)
+    @Override
+    public boolean updateMember(MemberDTO member) {
+        int affectedRows = memberMapper.updateMember(member);
+        // 업데이트된 행이 1개이면 true 반환
+        return affectedRows == 1;
+    }
 }

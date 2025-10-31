@@ -16,4 +16,6 @@ public interface MemberMapper {
     MemberDTO findMemberById(int memberId);
 
     List<BookDTO> findBooksRentedByMemberName(String name);
+
+    int updateMember(MemberDTO member);
 }

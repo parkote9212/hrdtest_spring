@@ -21,7 +21,7 @@
             name,
             phone,
             address
-            FROM member
+        FROM member
         order by member_id desc
 
     </select>
@@ -30,19 +30,30 @@
         SELECT * FROM member
         WHERE member_id = #{memberId}
     </select>
-    
-    <select id="findBooksRentedByMemberName" parameterType="string" resultType="MemberDTO">
+
+    <select id="findBooksRentedByMemberName" parameterType="string"
+            resultType="com.pgc.book.dto.BookDTO">
         SELECT
-            b.book_id,
+            b.book_id AS bookId,
             b.title,
             b.author,
             b.publisher,
             b.price,
-            b.pub_year
+            b.pub_year AS pubYear
         FROM member m
-        JOIN rental r ON m.member_id = r.member_id
-        JOIN book b ON r.book_id = b.book_id
+                 JOIN rental r ON m.member_id = r.member_id
+                 JOIN book b ON r.book_id = b.book_id
         WHERE m.name = #{name}
     </select>
+
+    <update id="updateMember" parameterType="MemberDTO">
+        UPDATE member
+        SET
+            name = #{name},
+            phone = #{phone},
+            address = #{address}
+        WHERE
+            member_id = #{memberId}
+    </update>
 
 </mapper>
