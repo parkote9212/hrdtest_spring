@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pgc.book.mapper.BookMapper">
+
+    <insert id="insertBook" parameterType="BookDTO"
+            useGeneratedKeys="true" keyProperty="bookId">
+        INSERT INTO book (title, author, publisher, price, pub_year)
+        values (
+                #{title},
+                #{author},
+                #{publisher},
+                #{price},
+                #{pubYear}
+               )
+    </insert>
+
+    <select id="findAllBooks" resultType="BookDTO">
+        SELECT
+            book_id,
+            title,
+            author,
+            publisher,
+            price,
+            pub_year
+        FROM book
+        ORDER BY book_id desc
+
+    </select>
+
+    <select id="findBookById" parameterType="int" resultType="BookDTO">
+        SELECT * FROM book
+        WHERE book_id = #{bookId}
+    </select>
+
+    <select id="findBooksPublishedAfter" parameterType="string" resultType="BookDTO">
+        SELECT
+            book_id,
+            title,
+            author,
+            publisher,
+            price,
+            pub_year
+        FROM book
+        WHERE CAST(pub_year AS UNSIGNED) >= CAST(#{year} AS UNSIGNED)
+        ORDER BY pub_year DESC, title ASC
+    </select>
+
+    <select id="getBookRentalCounts" resultType="BookRentalCountDTO">
+        SELECT
+            b.book_id,
+            b.title,
+            -- rental 테이블의 book_id 갯수를 셉니다.
+            -- LEFT JOIN이므로, rental 기록이 없으면 COUNT()는 0을 반환합니다.
+            COUNT(r.book_id) AS rental_count
+        FROM book b  -- 'book' 테이블을 기준으로 (모든 책을 보여주기 위해)
+
+        -- rental 테이블과 LEFT JOIN (대출 안 된 책도 포함)
+                 LEFT JOIN rental r ON b.book_id = r.book_id
+
+        -- book_id, title을 기준으로 그룹화
+        GROUP BY b.book_id, b.title
+
+        -- 대출 횟수가 많은 순으로 정렬
+        ORDER BY rental_count DESC
+    </select>
+
+    <select id="findMostExpensiveBooks" resultType="BookDTO">
+        SELECT
+            book_id,
+            title,
+            author,
+            publisher,
+            price,
+            pub_year
+        FROM book
+        WHERE price = (SELECT MAX(price) FROM book)
+    </select>
+
+    <update id="updateBook" parameterType="BookDTO">
+        UPDATE book
+        SET
+            title = #{title},
+            author = #{author},
+            publisher = #{publisher},
+            price = #{price},
+            pub_year = #{pubYear}
+        WHERE
+            book_id = #{bookId}
+    </update>
+
+    <delete id="deleteBook" parameterType="int">
+        DELETE FROM book
+        WHERE book_id = #{bookId}
+    </delete>
+
+
+</mapper>

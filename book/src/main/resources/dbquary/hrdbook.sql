@@ -1,0 +1,27 @@
+CREATE TABLE member (
+	member_id INT AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(100) NOT NULL,
+	phone VARCHAR(20),
+	address VARCHAR(255)
+	) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4;
+	
+CREATE TABLE book (
+	book_id INT AUTO_INCREMENT PRIMARY KEY,
+	title VARCHAR(255) NOT NULL,
+	author VARCHAR(100),
+	publisher VARCHAR(100),
+	price INT DEFAULT 0,
+	pub_year CHAR(4),
+	CONSTRAINT chk_price CHECK (price >= 0)
+	) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4;
+	
+CREATE TABLE rental (
+	rental_id INT AUTO_INCREMENT PRIMARY KEY,
+	member_id INT,
+	book_id INT,
+	rent_date DATE,
+	retrun_date DATE,
+	
+	CONSTRAINT fk_member FOREIGN KEY (member_id) REFERENCES MEMBER(member_id),
+	CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES book(book_id)
+	) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4;

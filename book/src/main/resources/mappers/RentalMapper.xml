@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pgc.book.mapper.RentalMapper">
+
+    <insert id="insertRental" parameterType="RentalDTO"
+            useGeneratedKeys="true" keyProperty="rentalId">
+        INSERT INTO rental (member_id, book_id, rent_date, return_date)
+        values (#{memberId},
+                #{bookId},
+                #{rentDate},
+                #{returnDate}
+               )
+    </insert>
+
+    <select id="findAllRentals" resultType="RentalDTO">
+        SELECT
+            rental_id,
+            member_id,
+            book_id,
+            rent_date,
+            return_date
+        FROM rental
+        order by rental_id desc
+
+    </select>
+
+    <select id="findRentalById" parameterType="int" resultType="RentalDTO">
+        SELECT * FROM rental
+        WHERE rental_id = #{rentalId}
+    </select>
+
+    <select id="findUnreturnedBooks" resultType="BookDTO">
+        SELECT
+            b.book_id,
+            b.title,
+            b.author,
+            b.publisher,
+            b.price,
+            b.pub_year
+        FROM rental r
+                 JOIN book b ON r.book_id = b.book_id
+        WHERE r.return_date IS NULL
+    </select>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pgc.book.mapper.MemberMapper">
+
+    <insert id="insertMember" parameterType="MemberDTO"
+            useGeneratedKeys="true" keyProperty="memberId">
+        INSERT INTO member (name, phone, address)
+        values (
+                   #{name},
+                   #{phone},
+                   #{address}
+               )
+    </insert>
+
+    <select id="findAllMembers" resultType="MemberDTO">
+        SELECT
+            member_id,
+            name,
+            phone,
+            address
+            FROM member
+        order by member_id desc
+
+    </select>
+
+    <select id="findMemberById" parameterType="int" resultType="MemberDTO">
+        SELECT * FROM member
+        WHERE member_id = #{memberId}
+    </select>
+    
+    <select id="findBooksRentedByMemberName" parameterType="string" resultType="MemberDTO">
+        SELECT
+            b.book_id,
+            b.title,
+            b.author,
+            b.publisher,
+            b.price,
+            b.pub_year
+        FROM member m
+        JOIN rental r ON m.member_id = r.member_id
+        JOIN book b ON r.book_id = b.book_id
+        WHERE m.name = #{name}
+    </select>
+
+</mapper>
